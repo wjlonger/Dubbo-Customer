@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPObject;
 import com.coder.springbootdomecollection.model.SysMenu;
+import com.coder.springbootdomecollection.model.SysRole;
 import com.coder.springbootdomecollection.service.SysMenuService;
+import com.coder.springbootdomecollection.service.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,9 @@ public class ViewSystemController {
     @Autowired
     private SysMenuService sysMenuService;
 
+    @Autowired
+    private SysRoleService sysRoleService;
+
     @GetMapping("/user")
     public String user(Model model) {
         return "system/user";
@@ -36,6 +41,8 @@ public class ViewSystemController {
 
     @GetMapping("/role")
     public String role(Model model) {
+        List<SysRole> roles = sysRoleService.selectAll(null);
+        model.addAttribute("data",JSONObject.toJSON(roles));
         return "system/role";
     }
 

@@ -1,0 +1,133 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org"
+       xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+       layout:decorator="layout/layout"
+       lang="zh-CN">
+    <head></head>
+    <body>
+        <div id="app" layout:fragment="content">
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn btn-common" data-toggle="modal" data-target=".menu-modal" >
+                        <i class="fa fa-clone"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="box col-xs-12 col-sm-12 col-md-12 col-lg-6" v-for="(menu,outterindex) in menus" :key="menu.id">
+                    <div class="box-inner">
+                        <div class="box-header well" @click.stop.prevent="tableToggle(menu)">
+                            <h2>
+                                <i v-bind:class="[menu.icon ? menu.icon:'fa fa-star']"></i>
+                                {{menu.name}}
+                            </h2>
+                            <div class="box-icon">
+                                <a href="#" @click.prevent.stop="add(menu)" class="btn btn-round btn-default"><i class="mdi mdi-database-plus"></i></a>
+                                <a href="#" @click.prevent.stop="update(menu)" class="btn btn-round btn-default"><i class="fa fa-gear"></i></a>
+                                <a href="#" @click.prevent.stop="delParentMenu(menu,outterindex)" class="btn btn-round btn-default"><i class="fa fa-trash-o"></i></a>
+
+                            </div>
+                        </div>
+                        <div class="box-content" v-if="menu.show">
+                            <table class="table" >
+                                <thead>
+                                    <tr>
+                                        <th ><strong>#</strong></th>
+                                        <th ><strong>NAME</strong></th>
+                                        <th ><strong>URL</strong></th>
+                                        <th ><strong>ICON</strong></th>
+                                        <th ><strong>ORDER</strong></th>
+                                        <th ><strong>OPERATE</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <tr v-for="(smenu,innerindex) in menu.childrenMenus" :key="smenu.id">
+                                        <td><i v-bind:class="[smenu.icon]"></i></td>
+                                        <td><input type="text" v-model="smenu.name" class="form-control" /></td>
+                                        <td><input type="text" v-model="smenu.url" class="form-control" /></td>
+                                        <td><input type="text" v-model="smenu.icon" class="form-control" /></td>
+                                        <td><input type="number" v-model="smenu.order" class="form-control" /></td>
+                                        <td>
+                                            <i class="fa fa-pencil-square-o pull-left" @click.stop.prevent="save(smenu,outterindex)"></i>
+                                            <i class="fa fa-trash pull-right" @click.stop.prevent="del(menu,smenu,innerindex)"></i>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="menu-modal" class="modal fade menu-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" >
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Save/Update</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <form class="form">
+                                            <div class="form-row">
+                                                <div class="form-group col-12">
+                                                    <label for="name">NAME</label>
+                                                    <input type="text" class="form-control" id="name" v-model="menu.name">
+                                                </div>
+                                                <div class="form-group col-12">
+                                                    <label for="url">URL</label>
+                                                    <input type="text" class="form-control" id="url" v-model="menu.url">
+                                                </div>
+                                                <div class="form-group col-12">
+                                                    <label for="icon">ICON <i v-bind:class="[menu.icon]"></i></label>
+                                                    <input type="text" class="form-control" id="icon" v-model="menu.icon">
+                                                </div>
+                                                <div class="form-group col-12">
+                                                    <label for="order">ORDER</label>
+                                                    <input type="number" class="form-control" id="order" v-model="menu.order">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-common" @click="saveParentMenu()">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div layout:fragment="foot">
+            <script type="text/javascript" th:inline="javascript">
+                /*<![CDATA[*/
+                var data = [[${data}]];
+                var vm = new Vue({
+                    el: '#app',
+                    data: {
+                        roles:data,
+                        role:{
+                            rid:0,
+                            rname:"",
+                        }
+                    },
+                    methods: {
+                    }
+                });
+                $(function(){
+                    $('#menu-modal').on('hide.bs.modal', function () {
+                        Object.assign(vm.role,{
+                            rid:0,
+                            rname:"",
+                        })
+                    });
+                });
+                /*]]>*/
+            </script>
+        </div>
+    </body>
+</html>
