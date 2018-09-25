@@ -11,25 +11,6 @@
     <name>customer</name>
     <description>Dubbo Customer</description>
 
-
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>aliyun</id>-->
-            <!--&lt;!&ndash; 华为Maven镜像&ndash;&gt;-->
-            <!--&lt;!&ndash;<url>https://repo.huaweicloud.com/repository/maven/</url>&ndash;&gt;-->
-            <!--&lt;!&ndash; 阿里Maven镜像&ndash;&gt;-->
-            <!--<url>http://maven.aliyun.com/nexus/content/groups/public/</url>-->
-            <!--<releases>-->
-                <!--<enabled>true</enabled>-->
-            <!--</releases>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-                <!--<updatePolicy>always</updatePolicy>-->
-                <!--<checksumPolicy>fail</checksumPolicy>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
-    <!--</repositories>-->
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

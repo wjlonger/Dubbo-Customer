@@ -197,13 +197,19 @@
                             });
                         },
                         delParentMenu:function(menu,index){
-                            axios.delete('/api/menu/' + menu.id)
-                            .then(response => {
-                                if(response.data.code == 1){
-                                    vm.menus.splice(index,1);
-                                }
-                            }).catch(response => {
-                            });
+                            layer.confirm('确定要删除吗？', {
+                                btn: ['确定','取消']
+                            }, function(){
+                                axios.delete('/api/menu/' + menu.id)
+                                    .then(response => {
+                                        if(response.data.code == 1){
+                                            vm.menus.splice(index,1);
+                                        }
+                                    }).catch(response => {
+                                })
+                                layer.closeAll()
+                            }, function(){});
+
                         }
                     }
                 });
