@@ -9,94 +9,83 @@
         <div id="app" layout:fragment="content">
             <div class="row">
                 <div class="col-12">
-                    <button class="btn btn-common" data-toggle="modal" data-target=".menu-modal" >
+                    <button class="btn btn-common" data-toggle="modal" data-target=".role-modal" >
                         <i class="fa fa-clone"></i>
                     </button>
                 </div>
             </div>
             <div class="row">
-                <div class="box col-xs-12 col-sm-12 col-md-12 col-lg-6" v-for="(menu,outterindex) in menus" :key="menu.id">
-                    <div class="box-inner">
-                        <div class="box-header well" @click.stop.prevent="tableToggle(menu)">
-                            <h2>
-                                <i v-bind:class="[menu.icon ? menu.icon:'fa fa-star']"></i>
-                                {{menu.name}}
-                            </h2>
-                            <div class="box-icon">
-                                <a href="#" @click.prevent.stop="add(menu)" class="btn btn-round btn-default"><i class="mdi mdi-database-plus"></i></a>
-                                <a href="#" @click.prevent.stop="update(menu)" class="btn btn-round btn-default"><i class="fa fa-gear"></i></a>
-                                <a href="#" @click.prevent.stop="delParentMenu(menu,outterindex)" class="btn btn-round btn-default"><i class="fa fa-trash-o"></i></a>
+                <div class="box col-xs-12 col-sm-12 col-md-12 col-lg-6" v-for="(role,outterindex) in roles" :key="role.rid">
+                    <div class="card">
+                        <div class="card-header border-bottom">
+                            <h4 class="card-title">{{role.rname}}</h4>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title"></h4>
+                            <div class="tab-primary">
+                                <ul class="nav nav-pills" role="tablist">
+                                    <li class="nav-item">
+                                        <a v-bind:href="'#nav-pills-' + outterindex + '-1'" class="nav-link active" role="tab" data-toggle="tab">Menus</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a v-bind:href="'#nav-pills-' + outterindex + '-2'" class="nav-link" role="tab" data-toggle="tab">Permission</a>
+                                    </li>
 
-                            </div>
-                        </div>
-                        <div class="box-content" v-if="menu.show">
-                            <table class="table" >
-                                <thead>
-                                    <tr>
-                                        <th ><strong>#</strong></th>
-                                        <th ><strong>NAME</strong></th>
-                                        <th ><strong>URL</strong></th>
-                                        <th ><strong>ICON</strong></th>
-                                        <th ><strong>ORDER</strong></th>
-                                        <th ><strong>OPERATE</strong></th>
-                                    </tr>
-                                </thead>
-                                <tbody >
-                                    <tr v-for="(smenu,innerindex) in menu.childrenMenus" :key="smenu.id">
-                                        <td><i v-bind:class="[smenu.icon]"></i></td>
-                                        <td><input type="text" v-model="smenu.name" class="form-control" /></td>
-                                        <td><input type="text" v-model="smenu.url" class="form-control" /></td>
-                                        <td><input type="text" v-model="smenu.icon" class="form-control" /></td>
-                                        <td><input type="number" v-model="smenu.order" class="form-control" /></td>
-                                        <td>
-                                            <i class="fa fa-pencil-square-o pull-left" @click.stop.prevent="save(smenu,outterindex)"></i>
-                                            <i class="fa fa-trash pull-right" @click.stop.prevent="del(menu,smenu,innerindex)"></i>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="menu-modal" class="modal fade menu-modal modal-danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" >
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Save/Update</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <form class="form">
-                                            <div class="form-row">
-                                                <div class="form-group col-12">
-                                                    <label for="name">NAME</label>
-                                                    <input type="text" class="form-control" id="name" v-model="menu.name">
+                                </ul>
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" v-bind:id="'nav-pills-' + outterindex + '-1'" >
+                                        <div class="p-20">
+                                            <form class="forms-sample">
+                                                <div class="row">
+                                                    <div class="col-md-4" v-for="(menu,innerindex) in role.sysMenuList">
+                                                        <div class="custom-control custom-checkbox m-b-20">
+                                                            <input type="checkbox" class="custom-control-input" v-bind:id="'checkbox-' + outterindex + '-1' + innerindex"  value="check"  v-model="menu.checked">
+                                                            <label class="custom-control-label" v-bind:for="'checkbox-' + outterindex + '-1' + innerindex">{{menu.name}}</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="form-group col-12">
-                                                    <label for="url">URL</label>
-                                                    <input type="text" class="form-control" id="url" v-model="menu.url">
-                                                </div>
-                                                <div class="form-group col-12">
-                                                    <label for="icon">ICON <i v-bind:class="[menu.icon]"></i></label>
-                                                    <input type="text" class="form-control" id="icon" v-model="menu.icon">
-                                                </div>
-                                                <div class="form-group col-12">
-                                                    <label for="order">ORDER</label>
-                                                    <input type="number" class="form-control" id="order" v-model="menu.order">
-                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" v-bind:id="'nav-pills-' + outterindex + '-2'" >
+                                        <div class="p-20">
+                                            <div class="row">
+                                                <div class="col-md-4" v-for="(permission,innerindex) in role.sysPermissionList"><h6>{{permission.name}}</h6></div>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-common" @click="saveParentMenu()">Save</button>
+                    </div>
+                </div>
+                <div id="role-modal" class="modal fade role-modal modal-danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Save/Update</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                            <form class="form">
+                                                <div class="form-row">
+                                                    <div class="form-group col-12">
+                                                        <label for="name">NAME</label>
+                                                        <input type="text" class="form-control" id="name" v-model="role.rname">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-common" @click="saveParentMenu()">Save</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -106,6 +95,39 @@
             <script type="text/javascript" th:inline="javascript">
                 /*<![CDATA[*/
                 var data = [[${data}]];
+                var menus = [[${menus}]];
+                var permissions = [[${permissions}]];
+                console.log(data);
+                console.log(menus);
+                console.log(permissions);
+                console.log(data);
+                for(var i in data){
+                    var sysMenuList = data[i]["sysMenuList"];
+                    var sysPermissionList = data[i]["sysPermissionList"];
+                    for(var j in sysMenuList){
+                        sysMenuList[j]["checked"] = false;
+                        menu:{
+                            for (var k in menus) {
+                                if (sysMenuList[j]["id"] === menus[k]["id"]) {
+                                    data[i]["sysMenuList"][j]["checked"] = true;
+                                    break menu;
+                                }
+                            }
+                        }
+                    }
+
+                    for(var j in sysPermissionList){
+                        sysPermissionList[j]["checked"] = false;
+                        permission:{
+                            for (var k in permissions) {
+                                if (sysPermissionList[j]["id"] === permissions[k]["id"]) {
+                                    data[i]["sysPermissionList"][j]["checked"] = true;
+                                    break permission;
+                                }
+                            }
+                        }
+                    }
+                }
                 var vm = new Vue({
                     el: '#app',
                     data: {
@@ -119,7 +141,7 @@
                     }
                 });
                 $(function(){
-                    $('#menu-modal').on('hide.bs.modal', function () {
+                    $('#role-modal').on('hide.bs.modal', function () {
                         Object.assign(vm.role,{
                             rid:0,
                             rname:"",
