@@ -19,7 +19,7 @@
                     <div class="box-inner">
                         <div class="box-header well" @click.stop.prevent="tableToggle(menu)">
                             <h2>
-                                <i v-bind:class="[menu.icon ? menu.icon:'fa fa-star']"></i>
+                                <i :class="[menu.icon ? menu.icon:'fa fa-star']"></i>
                                 {{menu.name}}
                             </h2>
                             <div class="box-icon">
@@ -43,7 +43,7 @@
                                 </thead>
                                 <tbody >
                                     <tr v-for="(smenu,innerindex) in menu.childrenMenus" :key="smenu.id">
-                                        <td><i v-bind:class="[smenu.icon]"></i></td>
+                                        <td><i :class="[smenu.icon]"></i></td>
                                         <td><input type="text" v-model="smenu.name" class="form-control" /></td>
                                         <td><input type="text" v-model="smenu.url" class="form-control" /></td>
                                         <td><input type="text" v-model="smenu.icon" class="form-control" /></td>
@@ -81,7 +81,7 @@
                                                     <input type="text" class="form-control" id="url" v-model="menu.url">
                                                 </div>
                                                 <div class="form-group col-12">
-                                                    <label for="icon">ICON <i v-bind:class="[menu.icon]"></i></label>
+                                                    <label for="icon">ICON <i :class="[menu.icon]"></i></label>
                                                     <input type="text" class="form-control" id="icon" v-model="menu.icon">
                                                 </div>
                                                 <div class="form-group col-12">
@@ -129,7 +129,7 @@
                                 url:'',
                                 icon : 'fa fa-plus',
                                 pid : menu.id,
-                                order:menu.childrenMenus[menu.childrenMenus.length - 1]["order"] + 1
+                                order:menu.childrenMenus.length > 0 ? menu.childrenMenus[menu.childrenMenus.length - 1]["order"] + 1 : 1
                             })
                         },
                         update:function(menu,index){

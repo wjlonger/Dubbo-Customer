@@ -21,71 +21,98 @@
                             <h4 class="card-title">{{role.rname}}</h4>
                         </div>
                         <div class="card-body">
-                            <h4 class="card-title"></h4>
-                            <div class="tab-primary">
-                                <ul class="nav nav-pills" role="tablist">
-                                    <li class="nav-item">
-                                        <a v-bind:href="'#nav-pills-' + outterindex + '-1'" class="nav-link active" role="tab" data-toggle="tab">Menus</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a v-bind:href="'#nav-pills-' + outterindex + '-2'" class="nav-link" role="tab" data-toggle="tab">Permission</a>
-                                    </li>
-
-                                </ul>
-                                <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane active" v-bind:id="'nav-pills-' + outterindex + '-1'" >
-                                        <div class="p-20">
-                                            <form class="forms-sample">
-                                                <div class="row">
-                                                    <div class="col-md-4" v-for="(menu,innerindex) in role.sysMenuList">
-                                                        <div class="custom-control custom-checkbox m-b-20">
-                                                            <input type="checkbox" class="custom-control-input" v-bind:id="'checkbox-' + outterindex + '-1' + innerindex"  value="check"  v-model="menu.checked">
-                                                            <label class="custom-control-label" v-bind:for="'checkbox-' + outterindex + '-1' + innerindex">{{menu.name}}</label>
+                            <form class="forms-sample form-horizontal">
+                                <div class="tab-primary">
+                                    <ul class="nav nav-pills" role="tablist">
+                                        <li class="nav-item">
+                                            <a :href="'#nav-pills-' + outterindex + '-1'" class="nav-link active" role="tab" data-toggle="tab">Menus</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a :href="'#nav-pills-' + outterindex + '-2'" class="nav-link" role="tab" data-toggle="tab">Permission</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" :id="'nav-pills-' + outterindex + '-1'" >
+                                            <div class="control-group" v-if="role.otherMenus.length > 0">
+                                                <label class="control-label" :for="'role-menu-' + role.rid"></label>
+                                                <div class="controls">
+                                                    <div class="row">
+                                                        <div class="col-8">
+                                                            <select data-placeholder="Select Your Menus" v-model="role.menu" :id="'role-menu-' + role.rid" data-rel="chosen" style="width: 100%;">
+                                                                <option v-for="otherMenu in role.otherMenus" :value="otherMenu.id" >{{otherMenu.name}}</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            </div>
+                                            <div class="p-20">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" v-for="(menu,innerindex) in role.sysMenuList">
+                                                        <div class="custom-control custom-checkbox m-b-20">
+                                                            <input type="checkbox" class="custom-control-input" :id="'checkbox-' + outterindex + '-1' + innerindex"  value="check"  v-model="menu.checked">
+                                                            <label class="custom-control-label" :for="'checkbox-' + outterindex + '-1' + innerindex">{{menu.name}}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div role="tabpanel" class="tab-pane fade" v-bind:id="'nav-pills-' + outterindex + '-2'" >
-                                        <div class="p-20">
-                                            <div class="row">
-                                                <div class="col-md-4" v-for="(permission,innerindex) in role.sysPermissionList"><h6>{{permission.name}}</h6></div>
+                                        <div role="tabpanel" class="tab-pane fade" :id="'nav-pills-' + outterindex + '-2'" >
+                                            <div class="control-group" v-if="role.otherPermissions.length > 0" >
+                                                <label class="control-label" :for="'role-permission-' + role.rid"></label>
+                                                <div class="controls">
+                                                    <div class="row">
+                                                        <div class="col-8">
+                                                            <select data-placeholder="Select Your Permission" :id="'role-permission-' + role.rid" data-rel="chosen" style="width: 100%;">
+                                                                <option v-for="otherPermission in role.otherPermissions" v-model="otherPermission.id" >{{otherPermission.name}}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="p-20">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" v-for="(permission,innerindex) in role.sysPermissionList">
+                                                        <div class="custom-control custom-checkbox m-b-20">
+                                                            <input type="checkbox" class="custom-control-input" :id="'checkbox-' + outterindex + '-2' + innerindex"  v-model="permission.checked">
+                                                            <label class="custom-control-label" :for="'checkbox-' + outterindex + '-2' + innerindex">{{permission.name}}</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div id="role-modal" class="modal fade role-modal modal-danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" >
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Save/Update</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <form class="form">
-                                                <div class="form-row">
-                                                    <div class="form-group col-12">
-                                                        <label for="name">NAME</label>
-                                                        <input type="text" class="form-control" id="name" v-model="role.rname">
-                                                    </div>
+            </div>
+            <div id="role-modal" class="modal fade role-modal modal-danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" >
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Save/Update</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <form class="form">
+                                            <div class="form-row">
+                                                <div class="form-group col-12">
+                                                    <label for="name">NAME</label>
+                                                    <input type="text" class="form-control" id="name" v-model="role.rname">
                                                 </div>
-                                            </form>
-                                        </div>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-common" @click="saveParentMenu()">Save</button>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-common" @click="saveParentMenu()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -95,39 +122,8 @@
             <script type="text/javascript" th:inline="javascript">
                 /*<![CDATA[*/
                 var data = [[${data}]];
-                var menus = [[${menus}]];
-                var permissions = [[${permissions}]];
-                console.log(data);
-                console.log(menus);
-                console.log(permissions);
-                console.log(data);
-                for(var i in data){
-                    var sysMenuList = data[i]["sysMenuList"];
-                    var sysPermissionList = data[i]["sysPermissionList"];
-                    for(var j in sysMenuList){
-                        sysMenuList[j]["checked"] = false;
-                        menu:{
-                            for (var k in menus) {
-                                if (sysMenuList[j]["id"] === menus[k]["id"]) {
-                                    data[i]["sysMenuList"][j]["checked"] = true;
-                                    break menu;
-                                }
-                            }
-                        }
-                    }
-
-                    for(var j in sysPermissionList){
-                        sysPermissionList[j]["checked"] = false;
-                        permission:{
-                            for (var k in permissions) {
-                                if (sysPermissionList[j]["id"] === permissions[k]["id"]) {
-                                    data[i]["sysPermissionList"][j]["checked"] = true;
-                                    break permission;
-                                }
-                            }
-                        }
-                    }
-                }
+                var menus = [[${allMenus}]];
+                var permissions = [[${allPermissions}]];
                 var vm = new Vue({
                     el: '#app',
                     data: {
@@ -137,8 +133,77 @@
                             rname:"",
                         }
                     },
+                    created:function(){
+                        for(var i in this.roles){
+                            this.$set(this.roles[i],"otherMenus",new Array());
+                            this.$set(this.roles[i],"menu",0);
+                            this.$set(this.roles[i],"otherPermissions",new Array());
+                            this.$set(this.roles[i],"permission",0);
+                            for(var j in this.roles[i]["sysMenuList"]){
+                                this.$set(this.roles[i]["sysMenuList"][j],"checked",true)
+                            }
+                            for(var j in this.roles[i]["sysPermissionList"]){
+                                this.$set(this.roles[i]["sysPermissionList"][j],"checked",true)
+                            }
+                        }
+                        for(var i in menus){
+                            for(var j in this.roles){
+                                menu:{
+                                    for(var k in this.roles[j]["sysMenuList"]){
+                                        if(menus[i]["id"] === this.roles[j]["sysMenuList"][k]["id"]){
+                                            break menu;
+                                        }
+                                    }
+                                    this.roles[j]["otherMenus"].push(menus[i]);
+                                }
+                            }
+                        }
+                        for(var i in permissions){
+                            for(var j in this.roles){
+                                permission:{
+                                    for(var k in this.roles[j]["sysPermissionList"]){
+                                        if(permissions[i]["id"] === this.roles[j]["sysPermissionList"][k]["id"]){
+                                            break permission;
+                                        }
+                                    }
+                                    this.roles[j]["otherPermissions"].push(permissions[i]);
+                                }
+                            }
+                        }
+                    },
+                    mounted:function(){
+                        for(var i in this.roles){
+                            var that = this.roles[i];
+                            $('#role-menu-' + that["rid"]).select2().on('change', function (e) {
+                                console.log(that);
+                                // that.menu = parseInt($(e.target).val());
+                                // axios.post('/api/role/menu/',menu,{
+                                //     transformRequest:[
+                                //         function(data){
+                                //             let params = '';
+                                //             for(let index in data){
+                                //                 if(typeof data[index] != 'object'){
+                                //                     params += index + '=' + data[index] + '&'
+                                //                 }
+                                //             }
+                                //             return params;
+                                //         }
+                                //     ]
+                                // }).then(response => {
+                                //     response.data.menu.show = true;
+                                //     vm.$set(vm.menus,index,response.data.menu);
+                                // }).catch(response => {
+                                // });
+                            });
+                            $('#role-permission-' + that["rid"]).select2().on('change', function (e) {
+                                // that.permission = $(e.target).val();
+                            });
+                        }
+                    },
                     methods: {
-                    }
+                        saveMenu:function(role){
+                        }
+                    },
                 });
                 $(function(){
                     $('#role-modal').on('hide.bs.modal', function () {

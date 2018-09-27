@@ -1,8 +1,6 @@
 package com.coder.dubbo.customer.controller.view;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import com.coder.springbootdomecollection.model.SysMenu;
 import com.coder.springbootdomecollection.model.SysPermission;
 import com.coder.springbootdomecollection.model.SysRole;
@@ -10,13 +8,13 @@ import com.coder.springbootdomecollection.service.SysMenuService;
 import com.coder.springbootdomecollection.service.SysPermissionService;
 import com.coder.springbootdomecollection.service.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.xml.ws.Action;
 import java.util.List;
 
 /**
@@ -26,7 +24,7 @@ import java.util.List;
  */
 
 @Controller
-@Scope("prototype")
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @RequestMapping("/system")
 public class ViewSystemController {
 
@@ -49,9 +47,9 @@ public class ViewSystemController {
         List<SysRole> roles = sysRoleService.selectAll(null);
         model.addAttribute("data",JSONObject.toJSON(roles));
         List<SysMenu> menus = sysMenuService.selectAll();
-        model.addAttribute("menus",JSONObject.toJSON(menus));
+        model.addAttribute("allMenus",JSONObject.toJSON(menus));
         List<SysPermission> permissions = sysPermissionService.selectAll(null);
-        model.addAttribute("permissions",JSONObject.toJSON(permissions));
+        model.addAttribute("allPermissions",JSONObject.toJSON(permissions));
         return "system/role";
     }
 
