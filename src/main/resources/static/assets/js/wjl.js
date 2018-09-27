@@ -12,6 +12,24 @@ Vue.prototype.showNotification = function (data) {
         }
     });
 };
+Vue.prototype.transformRequest = function(json,separator){
+    if(typeof separator === 'undefined') separator = "&";
+    var arr = new Array();
+    for(var i in json){
+        switch (typeof json[i]){
+            case "string":
+            case "number":
+            case "boolean":
+                arr.push(i + '=' + json[i]);
+                break;
+            case "undefined":
+            case "object":
+            case "function":break;
+            default:break;
+        }
+    }
+    return arr.join(separator);
+}
 $(function () {
     NProgress.start();
 });

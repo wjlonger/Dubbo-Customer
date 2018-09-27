@@ -38,7 +38,7 @@
                                                 <div class="controls">
                                                     <div class="row">
                                                         <div class="col-8">
-                                                            <select data-placeholder="Select Your Menus" v-model="role.menu" :id="'role-menu-' + role.rid" data-rel="chosen" style="width: 100%;">
+                                                            <select data-placeholder="Select Your Menus" v-model="role.menuid" :id="'role-menu-' + role.rid" data-rel="chosen" style="width: 100%;">
                                                                 <option v-for="otherMenu in role.otherMenus" :value="otherMenu.id" >{{otherMenu.name}}</option>
                                                             </select>
                                                         </div>
@@ -49,7 +49,7 @@
                                                 <div class="row">
                                                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" v-for="(menu,innerindex) in role.sysMenuList">
                                                         <div class="custom-control custom-checkbox m-b-20">
-                                                            <input type="checkbox" class="custom-control-input" :id="'checkbox-' + outterindex + '-1' + innerindex"  value="check"  v-model="menu.checked">
+                                                            <input type="checkbox" class="custom-control-input" :id="'checkbox-' + outterindex + '-1' + innerindex"  v-model="menu">
                                                             <label class="custom-control-label" :for="'checkbox-' + outterindex + '-1' + innerindex">{{menu.name}}</label>
                                                         </div>
                                                     </div>
@@ -62,8 +62,8 @@
                                                 <div class="controls">
                                                     <div class="row">
                                                         <div class="col-8">
-                                                            <select data-placeholder="Select Your Permission" :id="'role-permission-' + role.rid" data-rel="chosen" style="width: 100%;">
-                                                                <option v-for="otherPermission in role.otherPermissions" v-model="otherPermission.id" >{{otherPermission.name}}</option>
+                                                            <select data-placeholder="Select Your Permission" v-model="role.permissionid" :id="'role-permission-' + role.rid" data-rel="chosen" style="width: 100%;">
+                                                                <option v-for="otherPermission in role.otherPermissions" :value="otherPermission.id" >{{otherPermission.name}}</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -73,7 +73,7 @@
                                                 <div class="row">
                                                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" v-for="(permission,innerindex) in role.sysPermissionList">
                                                         <div class="custom-control custom-checkbox m-b-20">
-                                                            <input type="checkbox" class="custom-control-input" :id="'checkbox-' + outterindex + '-2' + innerindex"  v-model="permission.checked">
+                                                            <input type="checkbox" class="custom-control-input" :id="'checkbox-' + outterindex + '-2' + innerindex"  v-model="permission">
                                                             <label class="custom-control-label" :for="'checkbox-' + outterindex + '-2' + innerindex">{{permission.name}}</label>
                                                         </div>
                                                     </div>
@@ -122,80 +122,50 @@
             <script type="text/javascript" th:inline="javascript">
                 /*<![CDATA[*/
                 var data = [[${data}]];
-                var menus = [[${allMenus}]];
-                var permissions = [[${allPermissions}]];
                 var vm = new Vue({
                     el: '#app',
                     data: {
                         roles:data,
-                        role:{
-                            rid:0,
-                            rname:"",
-                        }
+                        role:{rid:0, rname:""},
+                        roleMap:new Map()
                     },
-                    created:function(){
-                        for(var i in this.roles){
-                            this.$set(this.roles[i],"otherMenus",new Array());
-                            this.$set(this.roles[i],"menu",0);
-                            this.$set(this.roles[i],"otherPermissions",new Array());
-                            this.$set(this.roles[i],"permission",0);
-                            for(var j in this.roles[i]["sysMenuList"]){
-                                this.$set(this.roles[i]["sysMenuList"][j],"checked",true)
-                            }
-                            for(var j in this.roles[i]["sysPermissionList"]){
-                                this.$set(this.roles[i]["sysPermissionList"][j],"checked",true)
-                            }
-                        }
-                        for(var i in menus){
-                            for(var j in this.roles){
-                                menu:{
-                                    for(var k in this.roles[j]["sysMenuList"]){
-                                        if(menus[i]["id"] === this.roles[j]["sysMenuList"][k]["id"]){
-                                            break menu;
-                                        }
-                                    }
-                                    this.roles[j]["otherMenus"].push(menus[i]);
-                                }
-                            }
-                        }
-                        for(var i in permissions){
-                            for(var j in this.roles){
-                                permission:{
-                                    for(var k in this.roles[j]["sysPermissionList"]){
-                                        if(permissions[i]["id"] === this.roles[j]["sysPermissionList"][k]["id"]){
-                                            break permission;
-                                        }
-                                    }
-                                    this.roles[j]["otherPermissions"].push(permissions[i]);
-                                }
-                            }
-                        }
-                    },
+                    created:function(){},
                     mounted:function(){
                         for(var i in this.roles){
                             var that = this.roles[i];
+                            this.roleMap.set('role-menu-' + that["rid"],i);
+                            this.roleMap.set('role-permission-' + that["rid"],i);
                             $('#role-menu-' + that["rid"]).select2().on('change', function (e) {
-                                //console.log(i);
-                                // that.menu = parseInt($(e.target).val());
-                                axios.post('/api/role/menu/',{roleid:that.id,menuid:$(e.target).val()},{
+                                var index = vm.roleMap.get($(e.target).attr("id"))
+                                axios.post('/api/role/menu/',{
+                                    roleid:vm.roles[index].rid,
+                                    menuid:$(e.target).val()
+                                },{
                                     transformRequest:[
                                         function(data){
-                                            let params = '';
-                                            for(let index in data){
-                                                if(typeof data[index] != 'object'){
-                                                    params += index + '=' + data[index] + '&'
-                                                }
-                                            }
-                                            return params;
+                                            return vm.transformRequest(data);
                                         }
                                     ]
                                 }).then(response => {
-                                    console.log(response);
+                                    Object.assign(vm.roles[index],response.data.role)
                                 }).catch(response => {
                                 });
                             });
                             $('#role-permission-' + that["rid"]).select2().on('change', function (e) {
-                                // that.permission = $(e.target).val();
+                                var index = vm.roleMap.get($(e.target).attr("id"))
+                                axios.post('/api/role/permission/',{
+                                    rid:vm.roles[index].rid,
+                                    pid:$(e.target).val()
+                                },{
+                                    transformRequest:[
+                                        function(data){
+                                            return vm.transformRequest(data);
+                                        }
+                                    ]
+                                }).then(response => {
+                                    Object.assign(vm.roles[index],response.data.role)
+                                }).catch(response => {
+                                });
                             });
                         }
                     },

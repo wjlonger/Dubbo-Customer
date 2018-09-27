@@ -140,13 +140,7 @@
                             axios.post('/api/menu/',menu,{
                                 transformRequest:[
                                     function(data){
-                                        let params = '';
-                                        for(let index in data){
-                                            if(typeof data[index] != 'object'){
-                                                params += index + '=' + data[index] + '&'
-                                            }
-                                        }
-                                        return params;
+                                        return vm.transformRequest(data);
                                     }
                                 ]
                             }).then(response => {
@@ -179,13 +173,7 @@
                             axios.post('/api/menu/parentmenu',vm.menu,{
                                 transformRequest:[
                                     function(data){
-                                        let params = '';
-                                        for(let index in data){
-                                            if(typeof data[index] != 'object'){
-                                                params += index + '=' + data[index] + '&'
-                                            }
-                                        }
-                                        return params;
+                                        return vm.transformRequest(data);
                                     }
                                 ]
                             }).then(response => {
