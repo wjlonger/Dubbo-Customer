@@ -175,25 +175,24 @@
                         for(var i in this.roles){
                             var that = this.roles[i];
                             $('#role-menu-' + that["rid"]).select2().on('change', function (e) {
-                                console.log(that);
+                                //console.log(i);
                                 // that.menu = parseInt($(e.target).val());
-                                // axios.post('/api/role/menu/',menu,{
-                                //     transformRequest:[
-                                //         function(data){
-                                //             let params = '';
-                                //             for(let index in data){
-                                //                 if(typeof data[index] != 'object'){
-                                //                     params += index + '=' + data[index] + '&'
-                                //                 }
-                                //             }
-                                //             return params;
-                                //         }
-                                //     ]
-                                // }).then(response => {
-                                //     response.data.menu.show = true;
-                                //     vm.$set(vm.menus,index,response.data.menu);
-                                // }).catch(response => {
-                                // });
+                                axios.post('/api/role/menu/',{roleid:that.id,menuid:$(e.target).val()},{
+                                    transformRequest:[
+                                        function(data){
+                                            let params = '';
+                                            for(let index in data){
+                                                if(typeof data[index] != 'object'){
+                                                    params += index + '=' + data[index] + '&'
+                                                }
+                                            }
+                                            return params;
+                                        }
+                                    ]
+                                }).then(response => {
+                                    console.log(response);
+                                }).catch(response => {
+                                });
                             });
                             $('#role-permission-' + that["rid"]).select2().on('change', function (e) {
                                 // that.permission = $(e.target).val();

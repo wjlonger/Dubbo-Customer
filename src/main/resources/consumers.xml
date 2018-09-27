@@ -25,6 +25,8 @@
     <dubbo:reference id="sysMenuService" interface="com.coder.springbootdomecollection.service.SysMenuService"/>
     <dubbo:reference id="doubleColorBallService" interface="com.coder.springbootdomecollection.service.DoubleColorBallService"/>
     <dubbo:reference id="doubleColorBallOrderService" interface="com.coder.springbootdomecollection.service.DoubleColorBallOrderService"/>
+    <dubbo:reference id="roleMenuService" interface="com.coder.springbootdomecollection.service.RoleMenuService"/>
+    <dubbo:reference id="rolePermissionService" interface="com.coder.springbootdomecollection.service.RolePermissionService"/>
 
 
 </beans>
