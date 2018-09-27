@@ -56,8 +56,11 @@ public class ApiSystemRoleController {
         return json.toString();
     }
 
-    @DeleteMapping("/menu")
-    private String deleteMenu(RoleMenu roleMenu){
+    @DeleteMapping("/menu/{roleid}/{menuid}")
+    private String deleteMenu(@PathVariable int roleid, @PathVariable int menuid){
+        RoleMenu roleMenu = new RoleMenu();
+        roleMenu.setRoleid(roleid);
+        roleMenu.setMenuid(menuid);
         int i = roleMenuService.deleteByPrimaryKey(roleMenu);
         JSONObject json = new JSONObject();
         JsonUtils.addMessage(i,json);
@@ -68,8 +71,11 @@ public class ApiSystemRoleController {
         return json.toString();
     }
 
-    @DeleteMapping("/permission")
-    private String deletePermission(RolePermission rolePermission){
+    @DeleteMapping("/permission/{roleid}/{permissionid}")
+    private String deletePermission(@PathVariable int roleid, @PathVariable int permissionid){
+        RolePermission rolePermission = new RolePermission();
+        rolePermission.setRid(roleid);
+        rolePermission.setPid(permissionid);
         int i = rolePermissionService.deleteByPrimaryKey(rolePermission);
         JSONObject json = new JSONObject();
         JsonUtils.addMessage(i,json);

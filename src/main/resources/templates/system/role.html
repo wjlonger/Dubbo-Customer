@@ -33,7 +33,7 @@
                                     </ul>
                                     <div class="tab-content">
                                         <div role="tabpanel" class="tab-pane active" :id="'nav-pills-' + outterindex + '-1'" >
-                                            <div class="control-group" v-if="role.otherMenus.length > 0">
+                                            <div class="control-group" >
                                                 <label class="control-label" :for="'role-menu-' + role.rid"></label>
                                                 <div class="controls">
                                                     <div class="row">
@@ -49,15 +49,20 @@
                                                 <div class="row">
                                                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" v-for="(menu,innerindex) in role.sysMenuList">
                                                         <div class="custom-control custom-checkbox m-b-20">
-                                                            <input type="checkbox" class="custom-control-input" :id="'checkbox-' + outterindex + '-1' + innerindex"  v-model="menu">
-                                                            <label class="custom-control-label" :for="'checkbox-' + outterindex + '-1' + innerindex">{{menu.name}}</label>
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-danger">{{menu.name}}</button>
+                                                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"></button>
+                                                                <ul class="dropdown-menu" role="menu">
+                                                                    <li><a href="#" @click="deleteMenu(menu,outterindex)">Delete</a></li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div role="tabpanel" class="tab-pane fade" :id="'nav-pills-' + outterindex + '-2'" >
-                                            <div class="control-group" v-if="role.otherPermissions.length > 0" >
+                                            <div class="control-group" >
                                                 <label class="control-label" :for="'role-permission-' + role.rid"></label>
                                                 <div class="controls">
                                                     <div class="row">
@@ -73,8 +78,13 @@
                                                 <div class="row">
                                                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4" v-for="(permission,innerindex) in role.sysPermissionList">
                                                         <div class="custom-control custom-checkbox m-b-20">
-                                                            <input type="checkbox" class="custom-control-input" :id="'checkbox-' + outterindex + '-2' + innerindex"  v-model="permission">
-                                                            <label class="custom-control-label" :for="'checkbox-' + outterindex + '-2' + innerindex">{{permission.name}}</label>
+                                                            <div class="btn-group">
+                                                                <button type="button" class="btn btn-danger">{{permission.name}}</button>
+                                                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"></button>
+                                                                <ul class="dropdown-menu" role="menu">
+                                                                    <li><a href="#" @click="deletePermission(permission,outterindex)">Delete</a></li>
+                                                                </ul>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -170,7 +180,19 @@
                         }
                     },
                     methods: {
-                        saveMenu:function(role){
+                        deleteMenu: function(menu,index){
+                            axios.delete('/api/role/menu/' + vm.roles[index].rid + "/" + menu.id)
+                            .then(response => {
+                                Object.assign(vm.roles[index],response.data.role)
+                            }).catch(response => {
+                            });
+                        },
+                        deletePermission:function(permission,index){
+                            axios.delete('/api/role/permission/' + vm.roles[index].rid + '/' + permission.id)
+                            .then(response => {
+                                Object.assign(vm.roles[index],response.data.role)
+                            }).catch(response => {
+                            });
                         }
                     },
                 });
