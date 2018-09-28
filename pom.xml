@@ -47,6 +47,12 @@
         <!--</dependency>-->
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>com.coder</groupId>
             <artifactId>springboot-dome-collection</artifactId>
             <version>0.0.1-SNAPSHOT</version>
@@ -264,6 +270,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -221,12 +221,16 @@
                             });
                         },
                         save:function(){
+
+                            console.log(111)
+                            console.log(JSON.stringify($("#role-menus").val()));
+                            //return;
                             var params = new URLSearchParams();
                             // params.append('sysRole',{rid:vm.role.rid,rname:vm.role.rname});
                             params.append('rid',vm.role.rid);
                             params.append('rname',vm.role.rname);
-                            params.append('mids',JSON.stringify($("#role-menus").val()));
-                            params.append('pids',JSON.stringify($("#role-permissions").val()));
+                            params.append('mids',$("#role-menus").val());
+                            params.append('pids',$("#role-permissions").val());
                             axios.post('/api/role',params)
                                 .then(response => {
                                     console.log(response)
