@@ -11,6 +11,8 @@ import com.coder.springbootdomecollection.model.SysRole;
 import com.coder.springbootdomecollection.service.RoleMenuService;
 import com.coder.springbootdomecollection.service.RolePermissionService;
 import com.coder.springbootdomecollection.service.SysRoleService;
+import com.coder.util.CollectionUtils;
+import com.coder.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.*;
@@ -87,11 +89,43 @@ public class ApiSystemRoleController {
     }
 
     @PostMapping
-    private String save(SysRole sysRole){
-        int i = sysRoleService.insert(sysRole);
+    private String save(SysRole sysRole,String[] mids, String[] pids){
+        int i = sysRoleService.save(sysRole);
         JSONObject json = new JSONObject();
         JsonUtils.addMessage(i,json);
         if(i > 0){
+            RoleMenu roleMenu = new RoleMenu();
+            roleMenu.setRoleid(sysRole.getRid());
+            roleMenuService.deleteByProperty(roleMenu);
+            RolePermission rolePermission = new RolePermission();
+            rolePermission.setRid(sysRole.getRid());
+            rolePermissionService.deleteByProperty(rolePermission);
+            if(!CollectionUtils.isNullOrEmptyStrict(mids)){
+                for(String mid : mids){
+                    if(!StringUtils.isNullOrSpace(mid)){
+                        int imid = Integer.parseInt(mid);
+                        if(imid > 0){
+                            RoleMenu rm = new RoleMenu();
+                            rm.setRoleid(sysRole.getRid());
+                            rm.setMenuid(imid);
+                            roleMenuService.insert(rm);
+                        }
+                    }
+                }
+            }
+            if(!CollectionUtils.isNullOrEmptyStrict(pids)){
+                for(String pid : pids){
+                    if(!StringUtils.isNullOrSpace(pid)){
+                        int ipid = Integer.parseInt(pid);
+                        if(ipid > 0){
+                            RolePermission rp = new RolePermission();
+                            rp.setRid(roleMenu.getRoleid());
+                            rp.setPid(ipid);
+                            rolePermissionService.insert(rp);
+                        }
+                    }
+                }
+            }
             List<SysRole> sysRoles = sysRoleService.selectAll(null);
             json.put("roles",sysRoles);
         }

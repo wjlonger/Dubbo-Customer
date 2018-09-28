@@ -115,19 +115,19 @@
                                             <div class="form-row">
                                                 <div class="form-group col-12">
                                                     <label for="name">NAME</label>
-                                                    <input type="text" class="form-control" id="name" v-model="role.rname">
+                                                    <input type="text" placeholder="Input Your Role Name" class="form-control" id="name" v-model="role.rname">
                                                 </div>
                                                 <div class="form-group col-12">
                                                     <label for="name">MENUS</label>
-                                                    <select id="role-menus" multiple="multiple" data-placeholder="Select Your Menus" data-rel="chosen" class="form-control" style="width:100%;">
-                                                        <!--<option th:each="menu:${allMenus}" th:value="${menu.id}" th:text="${menu.name}"></option>-->
+                                                    <select id="role-menus" data-rel="chosen" class="form-control" style="width:100%;">
+                                                        <!--/*<option th:each="menu:${allMenus}" th:value="${menu.id}" th:text="${menu.name}"></option>*/-->
                                                         <option v-for="menu in menus" :value="menu.id" >{{menu.name}}</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-12">
                                                     <label for="name">PERMISSIONS</label>
-                                                    <select id="role-permissions" multiple="multiple" data-placeholder="Select Your Permission" data-rel="chosen" class="form-control" style="width:100%;">
-                                                        <!--<option th:each="permission:${allPermissions}" th:value="${permission.id}" th:text="${permission.name}"></option>-->
+                                                    <select id="role-permissions" data-rel="chosen" class="form-control" style="width:100%;">
+                                                        <!--/*<option th:each="permission:${allPermissions}" th:value="${permission.id}" th:text="${permission.name}"></option>*/-->
                                                         <option v-for="permission in permissions" :value="permission.id" >{{permission.name}}</option>
                                                     </select>
                                                 </div>
@@ -156,7 +156,7 @@
                     data: {
                         roles:data,
                         role:{
-                            rid:null,
+                            rid:0,
                             rname:"",
                             sysMenuList:new Array(),
                             sysPermissionList:new Array()
@@ -221,7 +221,17 @@
                             });
                         },
                         save:function(){
-                            console.log(this.role);
+                            var params = new URLSearchParams();
+                            // params.append('sysRole',{rid:vm.role.rid,rname:vm.role.rname});
+                            params.append('rid',vm.role.rid);
+                            params.append('rname',vm.role.rname);
+                            params.append('mids',JSON.stringify($("#role-menus").val()));
+                            params.append('pids',JSON.stringify($("#role-permissions").val()));
+                            axios.post('/api/role',params)
+                                .then(response => {
+                                    console.log(response)
+                                }).catch(response => {
+                            });
                         },
                         openModal:function(role){
                             Object.assign(vm.role,{
@@ -235,17 +245,29 @@
                     },
                 });
                 $(function(){
-                    $('#role-modal').on('shown.bs.modal', function (e) {
+                    $('#role-modal').on('show.bs.modal', function (e) {
+                        var mids = new Array();
+                        var pids = new Array();
+                        for(var i in vm.role.sysMenuList){
+                            mids.push(vm.role.sysMenuList[i].id);
+                        }
+                        for(var i in vm.role.sysPermissionList){
+                            pids.push(vm.role.sysPermissionList[i].id);
+                        }
                         $('#role-menus').select2({
+                            multiple:true,
+                            placeholder:'Select Your Menus',
                             dropdownParent:$("#role-modal")
-                        });
+                        }).val(mids).trigger('change');
                         $('#role-permissions').select2({
+                            multiple:true,
+                            placeholder:'Select Your Permissions',
                             dropdownParent:$("#role-modal")
-                        });
+                        }).val(pids).trigger('change');
                     });
                     $('#role-modal').on('hide.bs.modal', function () {
                         Object.assign(vm.role,{
-                            rid:null,
+                            rid:0,
                             rname:"",
                             sysMenuList:new Array(),
                             sysPermissionList:new Array()
