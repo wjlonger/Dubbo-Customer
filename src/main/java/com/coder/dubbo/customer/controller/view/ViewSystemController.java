@@ -46,6 +46,10 @@ public class ViewSystemController {
     public String role(Model model) {
         List<SysRole> roles = sysRoleService.selectAll(null);
         model.addAttribute("data",JSONObject.toJSON(roles));
+        List<SysMenu> menus = sysMenuService.selectAll();
+        model.addAttribute("allMenus",JSONObject.toJSON(menus));
+        List<SysPermission> permissions = sysPermissionService.selectAll(null);
+        model.addAttribute("allPermissions",JSONObject.toJSON(permissions));
         return "system/role";
     }
 

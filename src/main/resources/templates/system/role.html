@@ -9,7 +9,7 @@
         <div id="app" layout:fragment="content">
             <div class="row">
                 <div class="col-12">
-                    <button class="btn btn-common" data-toggle="modal" data-target=".role-modal" >
+                    <button class="btn btn-common" data-toggle="modal" data-target="#role-modal" >
                         <i class="fa fa-clone"></i>
                     </button>
                 </div>
@@ -19,6 +19,9 @@
                     <div class="card">
                         <div class="card-header border-bottom">
                             <h4 class="card-title">{{role.rname}}</h4>
+                            <a class="btn btn-app pull-right" th:href="'#'">
+                                <button class="btn btn-success" @click.stop.prevent="openModal(role)"><i class="fa fa-edit"></i> Edit</button>
+                            </a>
                         </div>
                         <div class="card-body">
                             <form class="forms-sample form-horizontal">
@@ -97,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            <div id="role-modal" class="modal fade role-modal modal-danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" >
+            <div id="role-modal" class="modal fade role-modal modal-danger" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" >
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -114,6 +117,20 @@
                                                     <label for="name">NAME</label>
                                                     <input type="text" class="form-control" id="name" v-model="role.rname">
                                                 </div>
+                                                <div class="form-group col-12">
+                                                    <label for="name">MENUS</label>
+                                                    <select id="role-menus" multiple="multiple" data-placeholder="Select Your Menus" data-rel="chosen" class="form-control" style="width:100%;">
+                                                        <!--<option th:each="menu:${allMenus}" th:value="${menu.id}" th:text="${menu.name}"></option>-->
+                                                        <option v-for="menu in menus" :value="menu.id" >{{menu.name}}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-12">
+                                                    <label for="name">PERMISSIONS</label>
+                                                    <select id="role-permissions" multiple="multiple" data-placeholder="Select Your Permission" data-rel="chosen" class="form-control" style="width:100%;">
+                                                        <!--<option th:each="permission:${allPermissions}" th:value="${permission.id}" th:text="${permission.name}"></option>-->
+                                                        <option v-for="permission in permissions" :value="permission.id" >{{permission.name}}</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -122,7 +139,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-common" @click="saveParentMenu()">Save</button>
+                            <button type="button" class="btn btn-common" @click="save()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -132,12 +149,21 @@
             <script type="text/javascript" th:inline="javascript">
                 /*<![CDATA[*/
                 var data = [[${data}]];
+                var menus = [[${allMenus}]];
+                var permissions = [[${allPermissions}]];
                 var vm = new Vue({
                     el: '#app',
                     data: {
                         roles:data,
-                        role:{rid:0, rname:""},
-                        roleMap:new Map()
+                        role:{
+                            rid:null,
+                            rname:"",
+                            sysMenuList:new Array(),
+                            sysPermissionList:new Array()
+                        },
+                        roleMap:new Map(),
+                        menus:menus,
+                        permissions:permissions
                     },
                     created:function(){},
                     mounted:function(){
@@ -145,7 +171,7 @@
                             var that = this.roles[i];
                             this.roleMap.set('role-menu-' + that["rid"],i);
                             this.roleMap.set('role-permission-' + that["rid"],i);
-                            $('#role-menu-' + that["rid"]).select2().on('change', function (e) {
+                            $('#role-menu-' + that["rid"]).select2({language: "zh-CN"}).on('change', function (e) {
                                 var index = vm.roleMap.get($(e.target).attr("id"))
                                 axios.post('/api/role/menu/',{
                                     roleid:vm.roles[index].rid,
@@ -161,7 +187,7 @@
                                 }).catch(response => {
                                 });
                             });
-                            $('#role-permission-' + that["rid"]).select2().on('change', function (e) {
+                            $('#role-permission-' + that["rid"]).select2({language: "zh-CN"}).on('change', function (e) {
                                 var index = vm.roleMap.get($(e.target).attr("id"))
                                 axios.post('/api/role/permission/',{
                                     rid:vm.roles[index].rid,
@@ -193,14 +219,36 @@
                                 Object.assign(vm.roles[index],response.data.role)
                             }).catch(response => {
                             });
+                        },
+                        save:function(){
+                            console.log(this.role);
+                        },
+                        openModal:function(role){
+                            Object.assign(vm.role,{
+                                rid:role.rid,
+                                rname:role.rname,
+                                sysMenuList:role.sysMenuList,
+                                sysPermissionList:role.sysPermissionList
+                            });
+                            $("#role-modal").modal("show");
                         }
                     },
                 });
                 $(function(){
+                    $('#role-modal').on('shown.bs.modal', function (e) {
+                        $('#role-menus').select2({
+                            dropdownParent:$("#role-modal")
+                        });
+                        $('#role-permissions').select2({
+                            dropdownParent:$("#role-modal")
+                        });
+                    });
                     $('#role-modal').on('hide.bs.modal', function () {
                         Object.assign(vm.role,{
-                            rid:0,
+                            rid:null,
                             rname:"",
+                            sysMenuList:new Array(),
+                            sysPermissionList:new Array()
                         })
                     });
                 });
